@@ -1,0 +1,80 @@
+Create a collectin by name student. Following are the columns in the collection.
+School keeps remarks for all the students in collection.
+
+name:Ajit hobby:[Reading,Cycling] subject:[Maths,Geography] marks:[65,58]
+name:Sakshi  subject:[Science,Social Science,History] marks:[99,80,70]
+name:Anagha hobby:[Cooking,Swimming] subject:[english,German]  
+name:Manoj hobby:[Treking,running] subject:[Political Science] marks:[ 87]
+name:Bhumi hobby:[Reading,Cycling]  
+name:Ajit hobby:[Boxing,Music] subject:[Accounts,Economic] marks:[93,87]
+
+db.student.insertMany([{name:'Ajit', hobby:['Reading','Cycling'], subject:['Maths','Geography'],marks:[65,58]},
+                       {name:'Sakshi', subject:['Science','Social Science','History'],marks:[99,80,70]},
+                       {name:'Anagha', hobby:['Cooking','Swimming'], subject:['English','German']},
+					   {name:'Manoj', hobby:['Treking','Running'], subject:['Political Science'],marks:[87]},
+					   {name:'Bhumi', hobby:['Reading','Cycling']},
+					   {name:'Ajit', hobby:['Boxing','Music'], subject:['Accounts','Economic'],marks:[93,87]}]);
+db.student.insert({name:'Sakshi', subject:['Science','Social Science','History'],marks:[99,80,70]});
+db.student.find().pretty();
+
+****************************** 1 ***************************************
+
+1.Add key-value pair remarks for all documents.
+db.student.updateMany({},{$set:{Remark:'good'}});
+
+****************************** 2 ***************************************
+2.Add remark "Arts Stream" for Manoj
+db.student.update({name:'Manoj'},{$set:{Remark:'Arts Stream'}});
+
+****************************** 3 ***************************************
+3.Increase marks of ajit by 10
+db.student.update({name:'Ajit'},{$inc:{'marks.$[]':10}});
+
+****************************** 4 ***************************************
+4.Add key-value pair subject for Bhumi
+db.student.update({name:'Bhumi'},{$set:{subject:[]}});
+
+****************************** 5 ***************************************
+5.Add one more subject 'English' for Anagha
+db.student.update({name:'Anagha'},{$push:{subject:'History'}});
+
+****************************** 6 ***************************************
+6.Delete subject 'Science' for  Sakshi
+db.student.update({name:'Sakshi'},{$pull:{subject:'Science'}});
+
+****************************** 7 ***************************************
+7.Display all documents where name starts with 'A'
+db.student.find({name:/^A.*/}).pretty();
+
+****************************** 8 ***************************************
+8.Add one more subject 'Economics' for Manoj
+db.student.update({name:'Manoj'},{$push:{subject:'Economics'}});
+
+****************************** 9 ***************************************
+9.Update marks of all subjects by incremanting it by 5 for Sakshi.
+db.student.update({name:'Sakshi'},{$inc:{'marks.$[]':5}});
+
+****************************** 10 ***************************************
+10. Add enrty for 3 new student
+name:Kunal  subject:[English,Hindi,French] 
+name:Suraj  subject:[Physics,Chemistry,Electronics]
+name:Varun  subject:[English,Sanskrit]
+
+db.student.insertMany([{name:'Kunal', subject:['English','Hindi','French']},
+                       {name:'Suraj', subject:['Physics','Chemistry','Electronics']},
+		       {name:'Varun', subject:['English','Sanskrit']}]);
+			
+****************************** 11 ***************************************			
+11.Display first 3 documents
+db.student.find().limit(3).pretty();
+
+****************************** 12 ***************************************
+12.Display student info who has taken 3 subjects for study
+db.student.find({subject:{$size:3}});
+
+****************************** 13 ***************************************
+13.Overwrite entire marks array with 50 for Ajit
+db.student.update({name:'Ajit'},{$set:{'marks.$[]':50}});
+ 
+  
+

@@ -1,0 +1,142 @@
+create table dept
+(
+dno number(2),
+dname varchar2(10) not null,
+constraint pkdno primary key(dno)
+);
+
+insert into dept
+values(1,'account');
+insert into dept
+values(2,'tech');
+insert into dept
+values(3,'marketing');
+
+
+create table emp
+(
+eno number(2),
+ename varchar2(10) not null,
+deptno number(2),
+constraint pkeno primary key(eno),
+constraint fkeno foreign key(deptno) references dept(dno) on delete cascade
+);
+
+insert into emp
+values(1,'aalesh',1);
+insert into emp
+values(2,'mandar',2);
+insert into emp
+values(3,'pandu',1);
+
+delete from dept
+where dno = 1;
+
+select * from emp;
+select * from dept;
+
+
+select * from dept
+where regexp_like(dname,'^t.*');
+
+select * from dept
+where regexp_like(dname,'^m.*g$');
+
+select * from dept
+where regexp_like(dname,'.*k.*');
+
+select * from dept
+where regexp_like(dname,'.*n.');
+
+select * from dept
+where regexp_like(dname,'..r.*');
+
+select * from dept
+where regexp_like(dname,'^[t,m]');
+
+select * from dept
+where regexp_like(dname,'^t.*h$');
+
+select * from dept
+where regexp_like(dname,'^[^t.*]');
+
+select * from dept
+where regexp_like(dname,'e{1}');
+
+select * from dept
+where regexp_like(dname,'^m.r.*g$');
+
+select * from dept
+where regexp_like(dname,'^m.*|^t.*');
+
+select * from dept
+where regexp_like(dname,'^t.*h$|^m.*g$');
+
+select * from dept
+where regexp_like(dname, '^[^t] and ^[^m]');
+
+select * from dept
+where dname = 'tech' and dno<3;
+
+select concat(dname,'.com') web from dept;
+
+Select * From dept
+Where regexp_like(dname, '^[A-Za-z]{9}');
+
+Select * From dept
+Where regexp_like(dname, '^[A-Za-z]{9}');
+
+select * from dept
+where dno<3 and dno=1 and regexp_like(dname, '.*t$');
+
+select * from emp1;
+select * from emp1
+where regexp_like(ename,'.*h$');
+
+alter table emp1
+add comm number(4);
+
+update emp1
+set comm=1000
+where regexp_like(ename,'^[m,r].*');
+
+
+select eid,ename,sal,sal+nvl(comm,0) "total sal"
+from emp1;
+
+select * from emp1
+where sal=90000 and regexp_like(ename,'^a.*h$');
+
+select * from emp1
+where mod(sal,3)=0;
+
+select concat(concat(ename,'****'),sal) from emp1;
+
+select concat(substr(ename,2,2),'@mycompany') id from emp1;
+
+select concat(concat('hello',ename),'!') from emp1
+where comm is not null;
+
+select lpad(ename,10,' ') name, length(ename) len from emp1;
+
+select * from emp1
+where sal=90000 and age between 21 and 24;
+
+
+select * from emp1
+where sal>3000 and ename = 'mandar' or ename = 'abhi';
+
+select * from emp1
+where deptid in (1,2) and extract(year from doj)=2023; 
+
+Select * From dept
+Where regexp_like(dname, '^[A-Za-z]{5}');
+
+select rpad(ename, 10,'*') from emp1;
+
+select concat(concat(ename,'****'),sal) from emp1;
+
+select * from emp1
+where mod(age,3)=0;
+
+select concat(concat(substr(ename,1,2),eid)),'@mycompany') from emp1;

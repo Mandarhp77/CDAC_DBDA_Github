@@ -1,0 +1,230 @@
+1. Display employee name who is earning maximunm salary.
+2. Find al1 employees who work in the department where martin works.
+3. Find all employees who work in the department where Smith works or Allen works
+4. Display all who earn more than Allen or Smith.
+5. Delete all employees who work in Smith's dept and earn more than 1200 as a sal.
+6. Change the sal of Smith to same a Jones.
+7. Increase the salary bu 10% in the database for all employees having experience more than 40 years
+8. Implement following using case statement. Use data from emp database.
+   If comm is null ‘need improvement’ If <500 “ok” If >=500 and < 1000 ‘good' ‘Excellent'
+9. For any available table create a sequence and check how it works.
+10. 10 From the emp table, write a SQL query to find out which employees have the same job as the employee whose 
+   eno is ID is 7499. Return ename,job,deptno.
+11.From the emp table, write a SQL query to find those employees who receive a higher salary than the employee 
+   with eno 7499. Return ename,job,deptno,sal.
+12. From the emp table, write a SQL query to find those employees whose salary matches the lowest salary of any 
+    of the departments. Return name, and department ID.   
+13.From the emp table, write a SQL query to find those employees who earn more than the average salary. Return
+    employee ID,  name,sal.   
+14.From the emp table, write a SQL query to find those employees who report to that manager whose name
+   starts with  ‘F’. Return employee ID,  name,sal.     
+15. From the emp table, write a SQL query to find those employees whose salary is in the range of 1000, and 3000
+   (Begin and end values included.). Return all the fields. 16
+16. From the emp table , write a SQL query to find those employees whose salary falls within the range of the smallest
+    salary and 2500. Return all the fields.
+17. Write a query which will display dept no and dept names to which no employee is assigned.
+18. Find employees who earn salary more than the avg sal of their dept.
+19. Display all employees with sal more than his manager's sal.
+
+
+
+select * from emp;
+********************** 1 ******************************
+1. Display employee name who is earning maximunm salary.
+
+select ename
+from emp
+where sal = (select max(sal)
+          from emp);
+
+********************** 2 ******************************
+2. Find al1 employees who work in the department where martin works.
+select *
+from emp
+where deptno=(select deptno 
+from emp
+where ename='MARTIN');
+
+********************** 3 ******************************
+3. Find all employees who work in the department where Smith works or Allen works
+
+select *
+from emp
+where deptno = any(
+    select deptno 
+    from emp
+    where ename in ('ALLEN','SMITH'));
+
+
+********************** 4 ******************************
+4. Display all who earn more than Allen or Smith.
+
+select * 
+from emp
+where sal>any(
+      select sal
+      from emp
+      where ename in ('ALLEN','SMITH'));
+
+********************** 5 ******************************
+5. Delete all employees who work in Smith's dept and earn more than 1200 as a sal.
+
+delete
+from emp
+where deptno =
+    (select deptno
+    from emp
+    where ename = 'SMITH')
+and sal>1200;
+
+
+********************** 6 ******************************
+6. Change the sal of Smith to same a Jones.
+
+
+update emp
+set sal=(select sal from emp
+        where ename='MARTIN')
+where ename='SMITH';
+
+********************** 7 ******************************
+7. Increase the salary 10% in the database for all employees having experience more than 40 years
+
+update emp
+set sal =sal + (sal*0.1)
+where (extract(year from sysdate)-extract( year from HIREDATE))>40;
+
+********************** 8 ******************************
+
+8. Implement following using case statement. Use data from emp database.
+   If comm is null ‘need improvement’ If <500 “ok” If >=500 and < 1000 ‘good' ‘Excellent'
+
+  select empno,ename,case when comm is null then 'need impruvement'
+                          when comm<500 then 'ok'
+                          when comm>=500 and comm<1000 then 'good' 
+                          else 'excellent'
+                          end
+  from emp;
+  
+********************** 9 ******************************
+9. For any available table create a sequence and check how it works.
+
+create sequence aalesh
+start with 7
+increment by 1
+minvalue 7
+maxvalue 10
+nocycle;
+
+insert into dept
+values(aalesh.nextval ,'pintu');
+insert into dept
+values(aalesh.nextval ,'cintu');
+
+delete from dept
+where dno in (7,8);
+
+********************** 10 ******************************
+10.From the emp table, write a SQL query to find out which employees have the same job as the employee whose 
+   eno is ID is 7499. Return ename,job,deptno.
+
+
+
+select empno,ename,job,deptno 
+from emp
+where job =(select job
+           from emp
+           where empno=7499);
+
+********************** 11 ******************************
+11.From the emp table, write a SQL query to find those employees who receive a higher salary than the employee 
+   with eno 7499. Return ename,job,deptno,sal.
+
+select ename, job, deptno,sal
+from emp
+where sal >
+    (select sal
+    from emp
+    where empno = 7499);
+
+********************** 12 ******************************
+12. From the emp table, write a SQL query to find those employees whose salary matches the lowest salary of any 
+    of the departments. Return name, and department ID. 
+
+
+select deptno,ename
+from emp
+where sal in (select min(sal)
+              from emp
+              group by deptno);
+
+********************** 13 ******************************
+
+13.From the emp table, write a SQL query to find those employees who earn more than the average salary. Return
+    employee ID,  name,sal.
+
+select deptno, empno, ename,sal
+from emp
+where sal>(
+           select avg(sal)
+           from emp);
+
+select avg(sal)
+from emp;
+
+********************** 14 ******************************
+14.From the emp table, write a SQL query to find those employees who report to that manager whose name
+   starts with  ‘F’. Return employee ID,  name,sal.
+
+
+select empno,ename,sal
+from emp
+where mgr = any (select empno
+                 from emp
+                 where regexp_like(ename,'^C.*'));
+
+********************** 15 ******************************
+15. From the emp table, write a SQL query to find those employees whose salary is in the range of 1000, and 3000
+   (Begin and end values included.). Return all the fields.
+
+select * 
+from emp
+where sal between 1000 and 3000;
+
+********************** 16 ******************************
+16. From the emp table , write a SQL query to find those employees whose salary falls within the range of the smallest
+    salary and 2500. Return all the fields.
+
+select * from emp
+where sal<=2500;
+
+********************** 17 ******************************
+17. Write a query which will display dept no and dept names to which no employee is assigned.
+
+
+
+
+select dept
+********************** 18 ******************************
+18. Find employees who earn salary more than the avg sal of their dept.
+
+    select * 
+    from emp e
+    where sal > (select avg(sal)
+                 from emp d
+                 where d.deptno = e.deptno);
+
+********************** 19 ******************************
+19. Display all employees with sal more than his manager's sal.
+
+    select *
+    from emp e
+    where sal<=(select sal
+		from emp m
+  		where m.empno=e.mgr);
+
+
+
+
+
+

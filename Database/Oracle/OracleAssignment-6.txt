@@ -1,0 +1,336 @@
+create following tables and solve following questions
+
+******************** Tables *********************************
+1. faculty(fid(PK),fname,sp.skill1,sp.skill2)
+   
+    CREATE TABLE faculty(
+   fid number primary key,
+   fname varchar2(20),
+   sp_skill1 varchar2(30),
+   sp_skill2 varchar2(30));
+
+2. courses(cid(PK),cname,rid,fid(FK))
+
+   CREATE TABLE Courses(
+   cid number primary key,
+   cname varchar2(15),
+   rid number, foreign key(rid) references room(rid)
+   on delete set null,
+   fid number, foreign key(fid) references faculty(fid)
+   on delete set null
+    );
+
+3. room(roomid,rname,rloc)
+
+   CREATE TABLE room(
+   rid number primary key,
+   rname varchar2(15) not null,
+   rloc varchar2(20));
+
+******************** Table Data *********************************
+faculty---
+fid fname spskill1 spskill2
+10 Amol database JAVA
+11 Asha JAVA MySQL
+12 Kiran CPP Database
+13 Seeta MySQL database
+
+courses---
+cid cname rid fid
+121 DBDA 100 10
+131 DAC 101
+141 DTISS
+151 DIOT 105 12
+
+Room---
+roomid rname rloc
+100 jasmin 1st floor
+101 Rose 2nd floor
+105 Lotus 1st floor
+103 Mogra 1st floor
+
+******************** Insert Data *********************************
+
+INSERT into faculty
+values(10,'Amol','database','JAVA');
+INSERT into faculty
+values(11,'Asha','JAVA','MySQL');
+INSERT into faculty
+values(12,'Kiran','CPP','Database');
+INSERT into faculty
+values(13,'Seete','MySQL','Database');
+
+INSERT into courses 
+values(121,'DBDA',100, 10);
+INSERT into courses (cid, cname, rid) 
+values(131,'DAC',101);
+INSERT into courses (cid, cname) 
+values(141,'DTISS');
+INSERT into courses 
+values(151,'DIOT',105, 12);
+
+
+INSERT into room 
+values(100,'Jasmin','1st floor');
+INSERT into room 
+values(101,'Rose','2nd floor');
+INSERT into room 
+values(105,'Lotus','1st floor');
+INSERT into room 
+values(103,'Mogra','1st floor');
+
+******************** Questions *********************************
+
+1. list all courses for which no room is assigned and all rooms which are available
+
+2. list all faculties who are not allocated to any course and rooms which are not
+allocated to any course
+ 
+
+3. list all rooms which are allocated or not allocated to any courses
+
+
+4. list all rooms which are not allocated to any courses
+selct rid,rname
+from room
+where not exists (select *
+ from course
+ where c.rid=r.rid);
+
+5. display courses and faculty assigned to those courses whose special skill is
+  database
+
+
+6. display time table --- it should contain course details , faculty and room details
+
+
+******************** 1 *********************************
+1. list all courses for which no room is assigned and all rooms which are available
+
+select c.cid, c.cname, r.rid, r.rname, r.rloc
+from  courses c
+full join room r
+on c.rid = r.rid
+where c.rid is null;
+
+
+******************** 2 *********************************
+2. list all faculties who are not allocated to any course and rooms which are not
+allocated to any course
+
+select f.fid, f.fname, c.cname
+from faculty f
+left join courses c
+on f.fid = c.fid
+where c.fid is null;
+
+
+******************** 3 *********************************
+3. list all rooms which are allocated or not allocated to any courses
+
+
+select r.rid, r.rname,r.rloc,c.cid,c.cname
+from  room  r
+right join courses c
+on c.rid = r.rid; 
+
+select r.rid, r.rname,c.cid,c.cname
+from  room  r
+full join courses c
+on c.rid = r.rid; 
+
+******************** 4 *********************************
+4. list all rooms which are not allocated to any courses
+
+select r.rid, r.rname, c.cname
+from room r
+left join courses c
+on c.rid = r.rid
+where c.rid is null;
+
+******************** 5 *********************************
+5. display courses and faculty assigned to those courses whose special skill is
+  database
+
+select c.cname,c.fid,f.fname,f.sp_skill1,f.sp_skill2
+from courses c
+full join faculty f
+on c.fid=f.fid
+where f.sp_skill1 in ('Database','database') or f.sp_skill2 in ('Database','database');
+
+select c.cname,c.fid,f.fname,f.sp_skill1,f.sp_skill2
+from faculty f
+left join courses c
+on c.fid=f.fid
+where f.sp_skill1 in ('Database','database') or f.sp_skill2 in ('Database','database');
+
+******************** 6 *********************************
+6. display time table --- it should contain course details , faculty and room details
+
+select f.fid, f.fname, f.sp_skill1, f.sp_skill2, c.cid,c.cname, c.rid, r.rname,r.rloc
+from faculty f, courses c, room r;
+
+select f.fname, f.sp_skill1,c.cname, r.rname
+from faculty f, courses c, room r
+where c.fid=f.fid or c.rid=r.rid;
+
+select f.fname, f.sp_skill1, f.sp_skill1,c.cname, r.rname
+from ((faculty f
+full join courses c
+on c.fid=f.fid)
+full join room r 
+on c.rid=r.rid);
+
+
+
+select * from room;
+select * from faculty;
+select * from courses;
+
+--------------------------------------------------------------------------------------------
+***************************** Table create ***************************
+create table Product(
+   pid number(3) primary key,
+   pname varchar2(20),
+   price number(6,2)default 20.00,
+   qty number check(qty>0),
+   cid number(2),
+   foreign key(cid) references category(cid)
+   on delete set null,
+   sid number(2),
+   foreign key(sid) references salesman(sid)
+   );
+
+create table salesman(
+   sid number primary key,
+   sname varchar2(15) unique not null,
+   city varchar2(15));
+
+create table category(
+   cid number primary key,
+   cname varchar2(15) unique not null,
+   description varchar2(30));
+
+***************************** Table Data ***************************
+
+prodid pname qty price catid sid
+123 lays 30 30.00 1 12
+111 pepsi 40 50.00 4 11
+134 nachos 50 50.00 1 12
+124 dairy milk 40 60.00 2 14
+124 pringles 40 60.00 1 14
+
+saleman ----- sname -----not null
+sid sname city
+11 Rahul Pune
+12 Kirti Mumbai
+13 Prasad Nashik
+14 Arnav Amaravati
+
+category ---- cname unique and not null
+cid cname description
+1 chips very crunchy
+2 chocolate very chocolaty
+3 snacks yummy
+4 cold drinks thanda thanda cool cool
+
+***************************** Insert data ***************************
+
+    INSERT into   product values(123,'lays',30,30.00,1,12);
+    INSERT into   product values(111,'pepsi',40,50.00,4,11);
+    INSERT into   product values(134,'nachos',50,50.00,1,12);
+    INSERT into   product values(124,'dairy milk',40,60.00,2,14);
+    INSERT into   product values(125,'pringles',40,60.00,1,14);
+
+    INSERT into   salesman values(11,'Rahul','Pune');
+    INSERT into   salesman values(12,'Kirti','Mumbai');
+    INSERT into   salesman values(13,'Prasad','Nashik');
+    INSERT into   salesman values(14,'Arnav','Amravati');
+ 
+    INSERT into  category values(1,'chips','crunchy');
+    INSERT into   category values(2,'chocolate','very chocolaty');
+    INSERT into   category values(3,'snacks','yummy');
+    INSERT into   category values(4,'cold drinks','thanda thanda cool cool');
+
+******************** 1 *********************************
+1. List all products with category chips
+ 
+  select * from product p
+  inner join category c
+  on c.cid=p.cid
+  where c.cname='chips';
+
+******************** 2 *********************************
+2. display all products sold by kirti
+
+   select  p.pname, p.sid, s.sname
+   from product p
+   inner join salesman s
+   on p.sid = s.sid
+   where s.sname = 'Kirti';
+
+
+******************** 3 *********************************
+3. display all salesman who do not sold any product
+
+select * from salesman s
+full join product p
+on s.sid=p.sid
+where s.sid not in (select sid from product);
+
+select s.sid, s.sname
+from product p
+right join salesman s
+on p.sid = s.sid
+where s.sid not in (select sid from product);
+
+select s.sid, s.sname, p.pname
+from salesman s
+left join product p
+on s.sid=p.sid
+where s.sid not in (select sid from product);
+   
+
+******************** 4 *********************************
+4. display all category for which no product is there
+
+select c.cid, c.cname, c.description 
+from category c
+left join product p
+on c.cid = p.cid
+where c.cid not in (select cid from product);
+
+
+******************** 5 *********************************
+5. display all products with no category assigned
+
+select c.cid,p.pname,c.cname from product p,category c
+full join category c
+on p.cid=c.cid
+where p.cid not in (select cid from category);
+
+
+******************** 6 *********************************
+6. list all salesman who stays in city with name starts with P or N
+
+select *
+from salesman
+where REGEXP_LIKE(city, '^P.*|^N.*');
+
+
+******************** 7 *********************************
+7. add new column in salesman table by name credit limit
+
+alter table salesman
+add credit_limit number(5);
+
+
+
+
+
+
+
+
+
+
+
